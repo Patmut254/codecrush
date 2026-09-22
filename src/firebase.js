@@ -1,10 +1,10 @@
+
 // Firebase setup — Realtime Database + anonymous auth.
 // Fill in your project's values in a .env file (see .env.example).
 
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, get, set, update } from 'firebase/database';
-import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-esuf9QingXXaNqZHl5qNMGhaAVWMp4c",
@@ -15,10 +15,6 @@ const firebaseConfig = {
   appId: "1:688994880932:web:ab9fe9af0bdef236f14531",
   measurementId: "G-1QRGTFZ7D1"
 };
-
-
-// const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 const isConfigured = Boolean(firebaseConfig.apiKey);
 
@@ -41,7 +37,11 @@ function ensureSignedIn() {
       auth,
       (user) => {
         unsubscribe();
-        if (user) return resolve(user.uid);
+
+        if (user) {
+          return resolve(user.uid);
+        }
+
         signInAnonymously(auth)
           .then((cred) => resolve(cred.user.uid))
           .catch(reject);
@@ -53,23 +53,42 @@ function ensureSignedIn() {
 
 async function saveProgress(userId, difficulty, progress) {
   if (!isConfigured || !userId) return;
-  await update(ref(db, `users/${userId}/progress/${difficulty}`), {
-    ...progress,
-    lastUpdated: Date.now(),
-  });
+
+  await update(
+    ref(db, `users/${userId}/progress/${difficulty}`),
+    {
+      ...progress,
+      lastUpdated: Date.now(),
+    }
+  );
 }
 
 async function loadProgress(userId, difficulty) {
   if (!isConfigured || !userId) return null;
-  const snapshot = await get(ref(db, `users/${userId}/progress/${difficulty}`));
+
+  const snapshot = await get(
+    ref(db, `users/${userId}/progress/${difficulty}`)
+  );
+
   return snapshot.exists() ? snapshot.val() : null;
 }
 
 async function markWordComplete(userId, difficulty, wordIndex) {
   if (!isConfigured || !userId) return;
-  await set(ref(db, `users/${userId}/completedWords/${difficulty}/${wordIndex}`), {
-    completedAt: Date.now(),
-  });
+
+  await set(
+    ref(db, `users/${userId}/completedWords/${difficulty}/${wordIndex}`),
+    {
+      completedAt: Date.now(),
+    }
+  );
 }
 
-export { isConfigured, ensureSignedIn, saveProgress, loadProgress, markWordComplete };
+export {
+  isConfigured,
+  ensureSignedIn,
+  saveProgress,
+  loadProgress,
+  markWordComplete
+};
+
