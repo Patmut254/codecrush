@@ -4,19 +4,22 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, get, set, update } from 'firebase/database';
+import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyC-esuf9QingXXaNqZHl5qNMGhaAVWMp4c",
+  authDomain: "codecrush-2b7f4.firebaseapp.com",
+  projectId: "codecrush-2b7f4",
+  storageBucket: "codecrush-2b7f4.firebasestorage.app",
+  messagingSenderId: "688994880932",
+  appId: "1:688994880932:web:ab9fe9af0bdef236f14531",
+  measurementId: "G-1QRGTFZ7D1"
 };
 
-// Only initialize once a real API key is present, so the game still runs
-// locally (with progress saved to localStorage) before Firebase is configured.
+
+// const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 const isConfigured = Boolean(firebaseConfig.apiKey);
 
 let app = null;
